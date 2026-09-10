@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Patient 360 Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/ihis-theme.css') }}">
+</head>
+
+<body>
+
+<div class="container mt-5 mb-5">
+
+    <h2>Patient 360 Profile</h2>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category if category != 'error' else 'danger' }} alert-dismissible fade show mt-3" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <!-- PATIENT DEMOGRAPHICS -->
+    <div class="card shadow-sm mt-4">
+        <div class="card-body">
+
+            <div class="d-flex justify-content-between align-items-center">
+                <h4>{{ patient.full_name }}</h4>
+
+                <div>
+                    <a href="/problems/create" class="btn btn-primary">
+                        + New Problem
+                    </a>
+
+                    <a href="/emr/clinical-notes/create?patient_id={{ patient.id }}"
+                       class="btn btn-success">
+                        + New Clinical Note
+                    </a>
+                </div>
+            </div>
+
+            <hr>
+
+            <div class="row">
+                <div class="col-md-3">
+                    <strong>MRN</strong><br>
+                    {{ patient.mrn }}
+                </div>
+
+                <div class="col-md-3">
+                    <strong>Gender</strong><br>
+                    {{ patient.gender }}
+                </div>
+
+                <div class="col-md-3">
+                    <strong>Phone</strong><br>
+                    {{ patient.phone }}
+                </div>
+
+                <div class="col-md-3">
+                    <strong>Blood Group</strong><br>
+                    {{ patient.blood_group }}
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- APPOINTMENTS HISTORY -->
+    <div class="card shadow-sm mt-4">
+        <div class="card-body">
+
+            <h4>Appointments History</h4>
+
+            <table class="table table-striped mt-3">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Doctor</th>
+                        <th>Type</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for appointment in appointments %}
+                    <tr>
+                        <td>{{ appointment.appointment_date }}</td>
+                        <td>{{ appointment.appointment_time }}</td>
+                        <td>{{ appointment.doctor.full_name if appointment.doctor else "Not Assigned" }}</td>
+                        <td>{{ appointment.appointment_type }}</td>
+                        <td>{{ appointment.status }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            {% if not appointments %}
+                <div class="alert alert-light">No appointments history available.</div>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <!-- PROBLEM LIST -->
+    <div class="card shadow-sm mt-4">
+        <div class="card-body">
+
+            <h4>Problem List</h4>
+            <p class="text-muted">
+                Active and historical diagnoses designed for future ICD-10 coding,
+                clinical reasoning, AI prediction, and longitudinal patient tracking.
+            </p>
+
+            <table class="table table-striped align-middle mt-3">
+                <thead>
+                    <tr>
+                        <th>Diagnosis</th>
+                        <th>ICD-10</th>
+                        <th>Type</th>
+                        <th>Status</th>
+                        <th>Severity</th>
+                        <th>Onset</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                {% for problem in problems %}
+                    {% if not problem.is_deleted %}
+                    <tr>
+                        <td>{{ problem.diagnosis_name }}</td>
+                        <td>{{ problem.icd10_code if problem.icd10_code else "-" }}</td>
+                        <td>{{ problem.problem_type }}</td>
+
+                        <td>
+                            {% if problem.clinical_status == "Active" %}
+                                <span class="badge bg-danger">Active</span>
+                            {% elif problem.clinical_status == "Resolved" %}
+                                <span class="badge bg-success">Resolved</span>
+                            {% else %}
+                                <span class="badge bg-secondary">{{ problem.clinical_status }}</span>
+                            {% endif %}
+                        </td>
+
+                        <td>{{ problem.severity if problem.severity else "-" }}</td>
+                        <td>{{ problem.onset_date if problem.onset_date else "-" }}</td>
+
+                        <td>
+                            <form action="{{ url_for('delete_problem', problem_id=problem.id) }}" 
+                                  method="POST" 
+                                  onsubmit="return confirm('Delete this problem entry?');" 
+                                  style="display: inline-block; margin: 0;">
+                                <button type="submit" class="btn btn-outline-danger btn-sm py-0 px-2">
+                                    Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endif %}
+                {% endfor %}
+                </tbody>
+            </table>
+
+            {% if not problems %}
+                <div class="alert alert-light">
+                    No clinical problems recorded.
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- AUTOMATED AI CLINICAL DECISION SUPPORT -->
+    <!-- ========================================== -->
+    <div class="card shadow-sm mt-4 border-primary">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0"><i class="bi bi-robot"></i> AI Clinical Decision Support (Gemini)</h5>
+        </div>
+        <div class="card-body">
+            
+            <p class="text-muted">
+                Automatically aggregate patient lab results, problem lists, clinical notes, and current medications to perform intelligent safety audits, prescription recommendations, and drug interference checks.
+            </p>
+
+            <form method="POST" action="{{ url_for('run_ai_review', patient_id=patient.id) }}">
+                <button type="submit" class="btn btn-primary w-100 fw-bold py-2">
+                    <i class="bi bi-magic"></i> Run Automated AI Clinical Review
+                </button>
+            </form>
+
+            {% if patient.ai_lab_records %}
+            <hr class="mt-4">
+            <h5 class="mb-3 text-primary">AI Review Audit History</h5>
+            <div class="accordion" id="aiLabHistory">
+                {% for lab in patient.ai_lab_records|sort(attribute='created_at', reverse=True) %}
+                <div class="accordion-item mb-2 border">
+                    <h2 class="accordion-header" id="headingLab{{ lab.id }}">
+                        <button class="accordion-button collapsed bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseLab{{ lab.id }}" aria-expanded="false" aria-controls="collapseLab{{ lab.id }}">
+                            <strong>Review Executed:</strong> &nbsp; {{ lab.created_at.strftime('%Y-%m-%d %H:%M') }}
+                        </button>
+                    </h2>
+                    <div id="collapseLab{{ lab.id }}" class="accordion-collapse collapse" aria-labelledby="headingLab{{ lab.id }}" data-bs-parent="#aiLabHistory">
+                        <div class="accordion-body">
+                            <h6 class="text-secondary"><strong>System Data Evaluated:</strong></h6>
+                            <pre class="bg-light p-2 border rounded text-muted" style="font-size: 0.85em; white-space: pre-wrap;">{{ lab.raw_text }}</pre>
+                            
+                            <h6 class="text-danger mt-3"><strong><i class="bi bi-shield-exclamation"></i> Gemini Clinical Analysis & Safety Audit:</strong></h6>
+                            <pre class="p-3 border-danger border rounded bg-danger-subtle text-dark" style="white-space: pre-wrap; font-family: inherit;">{{ lab.ai_analysis }}</pre>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <!-- LABORATORY HISTORY -->
+    <div class="card shadow-sm mt-4">
+        <div class="card-body">
+
+            <h4>Standard Laboratory History</h4>
+
+            <table class="table table-striped mt-3">
+                <thead>
+                    <tr>
+                        <th>Test</th>
+                        <th>Result</th>
+                        <th>Unit</th>
+                        <th>Flag</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                {% for order in lab_orders %}
+                    {% set result = order.results[0] if order.results else None %}
+                    <tr>
+                        <td>{{ order.lab_test.test_name }}</td>
+                        <td>{{ result.result_value if result else "-" }}</td>
+                        <td>{{ result.result_unit if result else "-" }}</td>
+
+                        <td>
+                            {% if result %}
+                                {% if result.flag == "Critical" %}
+                                    <span class="badge bg-danger">Critical</span>
+                                {% elif result.flag == "High" %}
+                                    <span class="badge bg-warning text-dark">High</span>
+                                {% elif result.flag == "Low" %}
+                                    <span class="badge bg-info">Low</span>
+                                {% else %}
+                                    <span class="badge bg-success">Normal</span>
+                                {% endif %}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+
+                        <td>{{ order.status }}</td>
+                        <td>{{ order.ordered_at }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            {% if not lab_orders %}
+                <div class="alert alert-light">No laboratory history available.</div>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <!-- RADIOLOGY HISTORY -->
+    <div class="card shadow-sm mt-4">
+        <div class="card-body">
+
+            <h4>Radiology History</h4>
+
+            <table class="table table-striped mt-3">
+                <thead>
+                    <tr>
+                        <th>Study</th>
+                        <th>Modality</th>
+                        <th>Findings</th>
+                        <th>Impression</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                {% for order in radiology_orders %}
+                    {% set report = order.reports[0] if order.reports else None %}
+                    <tr>
+                        <td>{{ order.radiology_test.test_name }}</td>
+                        <td>{{ order.radiology_test.modality }}</td>
+                        <td>{{ report.findings if report else "-" }}</td>
+                        <td>{{ report.impression if report else "-" }}</td>
+
+                        <td>
+                            {% if order.status == "Completed" %}
+                                <span class="badge bg-success">Completed</span>
+                            {% elif order.status == "Ordered" %}
+                                <span class="badge bg-warning text-dark">Ordered</span>
+                            {% else %}
+                                <span class="badge bg-secondary">{{ order.status }}</span>
+                            {% endif %}
+                        </td>
+
+                        <td>{{ order.ordered_at }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            {% if not radiology_orders %}
+                <div class="alert alert-light">No radiology history available.</div>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <!-- MEDICATION HISTORY (WITH AI CDS AUDIT BADGES) -->
+    <div class="card shadow-sm mt-4">
+        <div class="card-body">
+
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h4 class="mb-0">Medication History</h4>
+                <span class="badge bg-light text-secondary border px-2 py-1">
+                    <i class="bi bi-shield-check text-primary me-1"></i> Gemini CDS Monitored
+                </span>
+            </div>
+            <p class="text-muted small mb-3">
+                Longitudinal prescription records with automated clinical contraindication audit trails.
+            </p>
+
+            <table class="table table-striped align-middle mt-2">
+                <thead>
+                    <tr>
+                        <th>Medication</th>
+                        <th>Dose</th>
+                        <th>Frequency</th>
+                        <th>Duration</th>
+                        <th>Instructions / AI Safety Audit</th>
+                        <th>Status</th>
+                        <th>Prescribed At</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                {% for prescription in prescriptions %}
+                    <tr>
+                        <td>
+                            <strong>{{ prescription.medication.medication_name }}</strong>
+                            {% if prescription.medication.strength %}
+                                <small class="text-muted d-block">{{ prescription.medication.strength }}</small>
+                            {% endif %}
+                        </td>
+                        <td>{{ prescription.dose }}</td>
+                        <td>{{ prescription.frequency }}</td>
+                        <td>{{ prescription.duration }}</td>
+                        <td>
+                            {% if prescription.instructions and "AI Safety Warning Overridden" in prescription.instructions %}
+                                <div class="badge bg-danger-subtle text-danger border border-danger-subtle d-inline-flex align-items-center gap-1 mb-1">
+                                    <i class="bi bi-exclamation-triangle-fill"></i> AI Override Logged
+                                </div>
+                                <div class="small text-danger fw-semibold">
+                                    {{ prescription.instructions }}
+                                </div>
+                            {% elif prescription.instructions %}
+                                <span class="text-dark">{{ prescription.instructions }}</span>
+                            {% else %}
+                                <span class="text-muted">-</span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if prescription.status == "Dispensed" %}
+                                <span class="badge bg-success">Dispensed</span>
+                            {% elif prescription.status == "Prescribed" %}
+                                <span class="badge bg-warning text-dark">Prescribed</span>
+                            {% else %}
+                                <span class="badge bg-secondary">{{ prescription.status }}</span>
+                            {% endif %}
+                        </td>
+
+                        <td class="small text-muted">{{ prescription.prescribed_at }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            {% if not prescriptions %}
+                <div class="alert alert-light">No medication history available.</div>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <!-- CLINICAL NOTES HISTORY -->
+    <div class="card shadow-sm mt-4">
+        <div class="card-body">
+
+            <h4>Clinical Notes History</h4>
+            <p class="text-muted">
+                Structured EMR notes designed for future AI summarization, risk prediction, and clinical decision support.
+            </p>
+
+            <table class="table table-striped mt-3">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Doctor</th>
+                        <th>Note Type</th>
+                        <th>Chief Complaint</th>
+                        <th>Assessment</th>
+                        <th>Diagnosis</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                {% for note in clinical_notes %}
+                    <tr>
+                        <td>{{ note.created_at }}</td>
+                        <td>{{ note.doctor.full_name if note.doctor else "Not Assigned" }}</td>
+                        <td>{{ note.note_type }}</td>
+                        <td>{{ note.chief_complaint }}</td>
+                        <td>{{ note.assessment }}</td>
+                        <td>{{ note.diagnosis_text if note.diagnosis_text else "-" }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            {% if not clinical_notes %}
+                <div class="alert alert-light">
+                    No clinical notes available.
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <a href="/patients" class="btn btn-secondary mt-4">
+        Back to Patients
+    </a>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

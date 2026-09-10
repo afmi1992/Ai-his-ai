@@ -1,0 +1,13 @@
+.venv/
+venv/
+env/
+__pycache__/
+instance/
+dataset/
+datasets/
+.env
+*.db
+*.sqlite
+*.sqlite3
+Final-IHIS-Clean.tar.gz
+database/*.db

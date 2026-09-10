@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Radiology Report</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="container mt-5">
+
+    <h2>Create Radiology Report</h2>
+
+    <div class="alert alert-info mt-3">
+        <strong>Patient:</strong> {{ order.patient.full_name }} <br>
+        <strong>Doctor:</strong> {{ order.doctor.full_name if order.doctor else "Not Assigned" }} <br>
+        <strong>Study:</strong> {{ order.radiology_test.test_name }} <br>
+        <strong>Modality:</strong> {{ order.radiology_test.modality }}
+    </div>
+
+    <form method="POST" class="mt-4">
+
+        {{ form.hidden_tag() }}
+
+        <div class="mb-3">
+            {{ form.findings.label(class="form-label") }}
+            {{ form.findings(class="form-control", rows="6") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.impression.label(class="form-label") }}
+            {{ form.impression(class="form-control", rows="4") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.report_status.label(class="form-label") }}
+            {{ form.report_status(class="form-select") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.reported_by.label(class="form-label") }}
+            {{ form.reported_by(class="form-control") }}
+        </div>
+
+        {{ form.submit(class="btn btn-success") }}
+
+        <a href="/radiology" class="btn btn-secondary">Back</a>
+
+    </form>
+
+</div>
+
+</body>
+</html>

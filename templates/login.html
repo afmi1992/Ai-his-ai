@@ -1,0 +1,124 @@
+{% extends "auth_base.html" %}
+
+{% block title %}iHIS Login{% endblock %}
+
+{% block content %}
+
+<div class="ihis-login-shell">
+
+    <div class="ihis-login-card">
+
+        <div class="row g-0">
+
+            <div class="col-lg-6">
+                <div class="ihis-login-left">
+
+                    <div class="ihis-brand-mark">
+                        <i class="bi bi-hospital"></i>
+                    </div>
+
+                    <h1 class="mb-3">iHIS</h1>
+
+                    <h4 class="mb-4">
+                        Intelligent Healthcare Information System
+                    </h4>
+
+                    <p class="mb-4">
+                        AI-ready clinical platform for EMR, Patient 360,
+                        laboratory, radiology, pharmacy, and future AI models.
+                    </p>
+
+                    <div class="ihis-login-feature">
+                        <i class="bi bi-shield-lock"></i>
+                        <span>Secure role-based clinical access</span>
+                    </div>
+
+                    <div class="ihis-login-feature">
+                        <i class="bi bi-activity"></i>
+                        <span>Patient 360 clinical intelligence</span>
+                    </div>
+
+                    <div class="ihis-login-feature">
+                        <i class="bi bi-cpu"></i>
+                        <span>Future AI clinical decision support</span>
+                    </div>
+
+                    <div class="ihis-login-feature">
+                        <i class="bi bi-cloud-check"></i>
+                        <span>Cloud-ready scalable architecture</span>
+                    </div>
+
+                    <div class="ihis-ai-panel">
+                        <strong>AI-Native Infrastructure</strong>
+                        <p class="mb-0 mt-2">
+                            Built to support future Clinical AI, RAG, prediction models,
+                            digital twin, genomics, and specialty AI modules.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="ihis-login-right">
+
+                    <h2 class="mb-2">Welcome Back</h2>
+
+                    <p class="text-muted mb-4">
+                        Sign in to access the iHIS clinical workspace.
+                    </p>
+
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }}">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    <form method="POST" action="/login">
+
+                        {{ form.hidden_tag() }}
+
+                        <div class="mb-3">
+                            <label class="form-label">Email Address</label>
+                            {{ form.email(class="form-control ihis-form-control", placeholder="admin@ihis.com") }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            {{ form.password(class="form-control ihis-form-control", placeholder="Enter your password") }}
+                        </div>
+
+                        <div class="d-flex justify-content-end align-items-center mb-4">
+                            <a href="#" class="ihis-link">
+                                Forgot password?
+                            </a>
+                        </div>
+
+                        {{ form.submit(class="btn ihis-btn-primary w-100 btn-login") }}
+
+                    </form>
+
+                    <div class="ihis-security-note mt-4">
+                        <i class="bi bi-info-circle"></i>
+                        Future security layer: password reset, MFA login,
+                        audit trail, trusted devices, and role-based access verification.
+                    </div>
+
+                    <div class="text-center mt-4 text-muted" style="font-size: 13px;">
+                        iHIS AI-Native Healthcare Platform
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

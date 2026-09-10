@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Dental AI Workspace | iHIS</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        body {
+            background: #f4f7fb;
+            color: #172033;
+            font-family: Arial, sans-serif;
+        }
+
+        .page-container {
+            max-width: 1400px;
+            margin: auto;
+            padding: 40px 25px;
+        }
+
+        .hero-card {
+            background: linear-gradient(
+                135deg,
+                #0f172a,
+                #1d4ed8
+            );
+
+            color: white;
+            border-radius: 24px;
+            padding: 35px;
+
+            box-shadow:
+                0 15px 40px
+                rgba(15, 23, 42, 0.12);
+        }
+
+        .ai-badge {
+
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            background:
+                rgba(255,255,255,0.14);
+
+            padding: 8px 14px;
+            border-radius: 30px;
+
+            font-size: 14px;
+        }
+
+        .workspace-card {
+
+            background: white;
+
+            border:
+                1px solid #e2e8f0;
+
+            border-radius: 22px;
+
+            padding: 28px;
+
+            box-shadow:
+                0 8px 25px
+                rgba(15,23,42,0.06);
+        }
+
+        .upload-zone {
+
+            border:
+                2px dashed #cbd5e1;
+
+            border-radius: 18px;
+
+            padding: 40px 25px;
+
+            text-align: center;
+
+            background: #f8fafc;
+        }
+
+        .upload-icon {
+
+            width: 70px;
+            height: 70px;
+
+            margin: auto;
+            margin-bottom: 18px;
+
+            border-radius: 18px;
+
+            background: #dbeafe;
+            color: #2563eb;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 32px;
+        }
+
+        .btn-analyze {
+
+            height: 52px;
+
+            border-radius: 14px;
+
+            font-weight: 600;
+        }
+
+        /* ============================================
+           AI Result Images
+        ============================================ */
+
+        .result-panel {
+
+            border:
+                1px solid #e2e8f0;
+
+            border-radius: 18px;
+
+            overflow: hidden;
+
+            background: white;
+
+            height: 100%;
+        }
+
+        .result-panel-header {
+
+            padding: 15px 18px;
+
+            background: #f8fafc;
+
+            border-bottom:
+                1px solid #e2e8f0;
+
+            font-weight: 600;
+        }
+
+        .image-container {
+
+            background: #020617;
+
+            min-height: 320px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 12px;
+        }
+
+        .result-image {
+
+            width: 100%;
+
+            height: 320px;
+
+            object-fit: contain;
+
+            border-radius: 10px;
+        }
+
+        .image-description {
+
+            padding: 15px;
+
+            font-size: 14px;
+
+            color: #64748b;
+        }
+
+        /* ============================================
+           Metrics
+        ============================================ */
+
+        .metric-card {
+
+            background: #f8fafc;
+
+            border-radius: 15px;
+
+            padding: 18px;
+
+            height: 100%;
+        }
+
+        .metric-label {
+
+            color: #64748b;
+
+            font-size: 13px;
+        }
+
+        .metric-value {
+
+            font-weight: 600;
+
+            margin-top: 5px;
+        }
+
+        /* ============================================
+           Clinical Notice
+        ============================================ */
+
+        .clinical-note {
+
+            background: #fff7ed;
+
+            border-left:
+                4px solid #f59e0b;
+
+            padding: 16px;
+
+            border-radius: 12px;
+
+            color: #7c2d12;
+        }
+
+        .pipeline-box {
+
+            background: #eff6ff;
+
+            border:
+                1px solid #bfdbfe;
+
+            border-radius: 16px;
+
+            padding: 18px;
+        }
+
+        .pipeline-step {
+
+            display: inline-block;
+
+            background: white;
+
+            border:
+                1px solid #dbeafe;
+
+            border-radius: 10px;
+
+            padding: 8px 12px;
+
+            margin: 4px;
+
+            font-size: 13px;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="page-container">
+
+
+    <!-- ==================================================
+         HEADER
+    =================================================== -->
+
+    <div class="hero-card mb-4">
+
+        <div class="row align-items-center">
+
+            <div class="col-lg-8">
+
+                <div class="ai-badge mb-3">
+
+                    <i class="bi bi-cpu"></i>
+
+                    iHIS Clinical AI
+
+                </div>
+
+                <h1 class="mb-2">
+
+                    Dental AI Workspace
+
+                </h1>
+
+                <p class="mb-0 text-white-50">
+
+                    AI-assisted dental image segmentation
+                    using the integrated U-Net deep learning model.
+
+                </p>
+
+            </div>
+
+
+            <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+
+                <span class="badge bg-success p-3">
+
+                    <i class="bi bi-check-circle me-1"></i>
+
+                    Model Ready
+
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==================================================
+         FLASH MESSAGES
+    =================================================== -->
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+
+        {% if messages %}
+
+            {% for category, message in messages %}
+
+                <div
+                    class="alert alert-{{ category }}
+                           alert-dismissible fade show"
+                >
+
+                    {{ message }}
+
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"
+                    >
+                    </button>
+
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+    {% endwith %}
+
+
+    <!-- ==================================================
+         UPLOAD WORKSPACE
+    =================================================== -->
+
+    <div class="workspace-card mb-4">
+
+        <div class="row align-items-center">
+
+            <div class="col-lg-5">
+
+                <h4>
+
+                    <i class="bi bi-image me-2"></i>
+
+                    Dental Image Analysis
+
+                </h4>
+
+                <p class="text-muted">
+
+                    Select a dental image from your computer.
+
+                    The image will be processed by the
+                    integrated Dental U-Net segmentation model.
+
+                </p>
+
+
+                <div class="pipeline-box mt-4">
+
+                    <strong>
+
+                        AI Pipeline
+
+                    </strong>
+
+                    <div class="mt-3">
+
+                        <span class="pipeline-step">
+                            X-Ray
+                        </span>
+
+                        →
+
+                        <span class="pipeline-step">
+                            Preprocessing
+                        </span>
+
+                        →
+
+                        <span class="pipeline-step">
+                            U-Net
+                        </span>
+
+                        →
+
+                        <span class="pipeline-step">
+                            Segmentation
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-lg-7 mt-4 mt-lg-0">
+
+                <form
+                    method="POST"
+                    enctype="multipart/form-data"
+                >
+
+                    <div class="upload-zone">
+
+                        <div class="upload-icon">
+
+                            <i class="bi bi-cloud-arrow-up"></i>
+
+                        </div>
+
+                        <h5>
+
+                            Select Dental X-Ray
+
+                        </h5>
+
+                        <p class="text-muted">
+
+                            Supported formats:
+                            JPG, JPEG, PNG
+
+                        </p>
+
+                        <input
+                            class="form-control mb-3"
+                            type="file"
+                            name="image"
+                            accept=".jpg,.jpeg,.png"
+                            required
+                        >
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary
+                                   w-100 btn-analyze"
+                        >
+
+                            <i class="bi bi-cpu me-2"></i>
+
+                            Analyze with Dental AI
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==================================================
+         AI RESULTS
+    =================================================== -->
+
+    {% if result %}
+
+    <div class="workspace-card mb-4">
+
+
+        <!-- Result Header -->
+
+        <div
+            class="d-flex
+                   justify-content-between
+                   align-items-center
+                   mb-4"
+        >
+
+            <div>
+
+                <h3 class="mb-1">
+
+                    AI Analysis Result
+
+                </h3>
+
+                <span class="text-muted">
+
+                    Analysis ID:
+
+                    {{ result.analysis_id }}
+
+                </span>
+
+            </div>
+
+
+            <span class="badge bg-success p-2">
+
+                <i class="bi bi-check-circle me-1"></i>
+
+                Analysis Complete
+
+            </span>
+
+        </div>
+
+
+        <!-- ==================================================
+             IMAGE RESULTS
+        =================================================== -->
+
+        <div class="row g-4 mb-4">
+
+
+            <!-- ORIGINAL -->
+
+            <div class="col-lg-4">
+
+                <div class="result-panel">
+
+                    <div class="result-panel-header">
+
+                        <i class="bi bi-image me-2"></i>
+
+                        Original X-Ray
+
+                    </div>
+
+                    <div class="image-container">
+
+                        <img
+                            src="{{ url_for(
+                                'dental_ai_result',
+                                filename=result.original_filename
+                            ) }}"
+
+                            class="result-image"
+
+                            alt="Original Dental X-Ray"
+                        >
+
+                    </div>
+
+                    <div class="image-description">
+
+                        Original dental image prepared
+                        for AI processing.
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- SEGMENTATION MASK -->
+
+            <div class="col-lg-4">
+
+                <div class="result-panel">
+
+                    <div class="result-panel-header">
+
+                        <i class="bi bi-bounding-box me-2"></i>
+
+                        AI Segmentation Mask
+
+                    </div>
+
+                    <div class="image-container">
+
+                        <img
+                            src="{{ url_for(
+                                'dental_ai_result',
+                                filename=result.mask_filename
+                            ) }}"
+
+                            class="result-image"
+
+                            alt="Dental AI Segmentation Mask"
+                        >
+
+                    </div>
+
+                    <div class="image-description">
+
+                        Binary segmentation generated
+                        by the trained U-Net model.
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- AI OVERLAY -->
+
+            <div class="col-lg-4">
+
+                <div class="result-panel">
+
+                    <div class="result-panel-header">
+
+                        <i class="bi bi-layers me-2"></i>
+
+                        AI Overlay
+
+                    </div>
+
+                    <div class="image-container">
+
+                        <img
+                            src="{{ url_for(
+                                'dental_ai_result',
+                                filename=result.overlay_filename
+                            ) }}"
+
+                            class="result-image"
+
+                            alt="Dental AI Overlay"
+                        >
+
+                    </div>
+
+                    <div class="image-description">
+
+                        Segmentation mask superimposed
+                        on the original dental image.
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==================================================
+             MODEL METADATA
+        =================================================== -->
+
+        <h5 class="mb-3">
+
+            <i class="bi bi-cpu me-2"></i>
+
+            Model Information
+
+        </h5>
+
+
+        <div class="row g-3 mb-4">
+
+
+            <div class="col-md-3">
+
+                <div class="metric-card">
+
+                    <div class="metric-label">
+
+                        AI Model
+
+                    </div>
+
+                    <div class="metric-value">
+
+                        {{ result.metadata.model_name }}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-3">
+
+                <div class="metric-card">
+
+                    <div class="metric-label">
+
+                        Model Version
+
+                    </div>
+
+                    <div class="metric-value">
+
+                        {{ result.metadata.model_version }}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-3">
+
+                <div class="metric-card">
+
+                    <div class="metric-label">
+
+                        Segmentation Threshold
+
+                    </div>
+
+                    <div class="metric-value">
+
+                        {{ result.metadata.threshold }}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-3">
+
+                <div class="metric-card">
+
+                    <div class="metric-label">
+
+                        Positive Pixel Ratio
+
+                    </div>
+
+                    <div class="metric-value">
+
+                        {{
+                            "%.2f"|format(
+                                result.metadata.positive_pixel_ratio
+                                * 100
+                            )
+                        }} %
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==================================================
+             TECHNICAL INFORMATION
+        =================================================== -->
+
+        <div class="row g-3 mb-4">
+
+            <div class="col-md-4">
+
+                <div class="metric-card">
+
+                    <div class="metric-label">
+
+                        Model Type
+
+                    </div>
+
+                    <div class="metric-value">
+
+                        Image Segmentation
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="metric-card">
+
+                    <div class="metric-label">
+
+                        Input Shape
+
+                    </div>
+
+                    <div class="metric-value">
+
+                        256 × 256 × 1
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="metric-card">
+
+                    <div class="metric-label">
+
+                        AI Framework
+
+                    </div>
+
+                    <div class="metric-value">
+
+                        TensorFlow / Keras
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==================================================
+             CLINICAL NOTICE
+        =================================================== -->
+
+        <div class="clinical-note">
+
+            <strong>
+
+                <i class="bi bi-exclamation-triangle me-1"></i>
+
+                Clinical AI Notice
+
+            </strong>
+
+            <div class="mt-1">
+
+                This output is an AI-assisted segmentation
+                result intended for research and
+                clinical decision-support workflows.
+
+                It is not an autonomous diagnosis and
+                requires professional clinical interpretation.
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- ==================================================
+         NAVIGATION
+    =================================================== -->
+
+    <div class="d-flex justify-content-between">
+
+        <a
+            href="/dashboard"
+            class="btn btn-outline-secondary"
+        >
+
+            <i class="bi bi-arrow-left me-1"></i>
+
+            Back to Dashboard
+
+        </a>
+
+
+        <span
+            class="text-muted
+                   align-self-center"
+        >
+
+            iHIS AI-Native Healthcare Platform
+
+        </span>
+
+    </div>
+
+</div>
+
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+</script>
+
+
+</body>
+
+</html>

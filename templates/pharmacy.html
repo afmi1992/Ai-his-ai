@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI-Assisted Pharmacy Information System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+<div class="container mt-5 mb-5">
+
+    <!-- HEADER SECTION -->
+    <div class="d-flex align-items-center justify-content-between pb-3 mb-4 border-bottom">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <h2 class="fw-bold mb-0">
+                    <i class="bi bi-capsule-pill text-primary me-2"></i>AI-Assisted Pharmacy System
+                </h2>
+                <span class="badge bg-info-subtle text-info border border-info-subtle px-2 py-1 rounded-pill">
+                    <i class="bi bi-cpu me-1"></i>Gemini CDS Integrated
+                </span>
+            </div>
+            <p class="text-muted mb-0">Automated contraindication interceptor, medication catalog, and clinical dispensing management.</p>
+        </div>
+
+        <a href="{{ url_for('create_prescription') }}" class="btn btn-primary px-4 py-2 shadow-sm d-inline-flex align-items-center gap-2">
+            <i class="bi bi-shield-check"></i>
+            <span>+ Create Prescription & Check AI</span>
+        </a>
+    </div>
+
+    <!-- FLASH MESSAGES -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category if category != 'error' else 'danger' }} alert-dismissible fade show shadow-sm" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <!-- METRICS OVERVIEW -->
+    <div class="row g-3">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-body">
+                    <h6 class="text-uppercase text-secondary fw-semibold mb-2">Medication Catalog</h6>
+                    <h2 class="display-6 fw-bold mb-1">{{ medications_count }}</h2>
+                    <p class="text-muted small mb-0">Registered pharmacological items</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-body">
+                    <h6 class="text-uppercase text-secondary fw-semibold mb-2">Pending Prescriptions</h6>
+                    <h2 class="display-6 fw-bold text-warning mb-1">{{ pending_prescriptions_count }}</h2>
+                    <p class="text-muted small mb-0">Verified orders awaiting dispensing</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-body">
+                    <h6 class="text-uppercase text-secondary fw-semibold mb-2">Dispensed Orders</h6>
+                    <h2 class="display-6 fw-bold text-success mb-1">{{ dispensed_count }}</h2>
+                    <p class="text-muted small mb-0">Completed clinical fulfillment</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RECENT PRESCRIPTIONS TABLE -->
+    <div class="card mt-4 shadow-sm border-0 rounded-3 bg-white">
+        <div class="card-body p-4">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <h5 class="fw-bold mb-0">
+                    <i class="bi bi-clipboard2-pulse me-2"></i>Recent Prescriptions & Audit Log
+                </h5>
+                <span class="badge bg-light text-secondary border">Safety Auditing Active</span>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Patient</th>
+                            <th>Doctor</th>
+                            <th>Medication</th>
+                            <th>Dose</th>
+                            <th>Frequency</th>
+                            <th>Duration</th>
+                            <th>Status / Safety</th>
+                            <th>Prescribed At</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for prescription in recent_prescriptions %}
+                        <tr>
+                            <td class="fw-semibold">{{ prescription.patient.full_name }}</td>
+                            <td>{{ prescription.doctor.full_name if prescription.doctor else "Not Assigned" }}</td>
+                            <td>
+                                <strong>{{ prescription.medication.medication_name }}</strong>
+                                {% if prescription.instructions and "AI Safety Warning Overridden" in prescription.instructions %}
+                                    <div class="small text-danger fw-bold mt-1">
+                                        <i class="bi bi-exclamation-triangle-fill"></i> AI Override Logged
+                                    </div>
+                                {% endif %}
+                            </td>
+                            <td>{{ prescription.dose }}</td>
+                            <td>{{ prescription.frequency }}</td>
+                            <td>{{ prescription.duration }}</td>
+                            <td>
+                                {% if prescription.status == "Dispensed" %}
+                                    <span class="badge bg-success">Dispensed</span>
+                                {% elif prescription.status == "Prescribed" %}
+                                    <span class="badge bg-warning text-dark">Prescribed</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{{ prescription.status }}</span>
+                                {% endif %}
+                            </td>
+                            <td class="small text-muted">{{ prescription.prescribed_at }}</td>
+                            <td class="text-end">
+                                <div class="d-inline-flex gap-2">
+                                    {% if prescription.status == "Prescribed" %}
+                                        <a href="{{ url_for('dispense_prescription', prescription_id=prescription.id) }}"
+                                           class="btn btn-success btn-sm px-3">
+                                            Dispense
+                                        </a>
+                                    {% endif %}
+
+                                    <form action="{{ url_for('delete_prescription', prescription_id=prescription.id) }}" 
+                                          method="POST" 
+                                          onsubmit="return confirm('Are you sure you want to delete this prescription?');" 
+                                          style="display: inline-block; margin: 0;">
+                                        <button type="submit" class="btn btn-outline-danger btn-sm">
+                                            Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% if not recent_prescriptions %}
+                <div class="alert alert-light border text-center my-3 py-4 text-muted">
+                    <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+                    No prescriptions recorded yet.
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <a href="/dashboard" class="btn btn-outline-secondary mt-4">
+        <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+    </a>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

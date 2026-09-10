@@ -1,0 +1,2093 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+
+    <title>iHIS Enterprise Dashboard</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        rel="stylesheet"
+    >
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+    <style>
+
+        body {
+            background: #eef3f9;
+            font-family: Arial, sans-serif;
+        }
+
+
+        /* =====================================================
+           SIDEBAR
+        ===================================================== */
+
+        .sidebar {
+            width: 280px;
+            min-height: 100vh;
+            position: fixed;
+            background: #0f172a;
+            color: white;
+            padding-top: 20px;
+            overflow-y: auto;
+        }
+
+        .brand {
+            padding: 20px 28px;
+            font-size: 24px;
+            font-weight: 700;
+            border-bottom: 1px solid #334155;
+        }
+
+        .sidebar a {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            padding: 14px 28px;
+            color: #cbd5e1;
+            text-decoration: none;
+        }
+
+        .sidebar a:hover,
+        .sidebar .active {
+            background: #1e293b;
+            color: white;
+        }
+
+        .sidebar-section {
+            padding: 20px 28px 7px;
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+
+        /* =====================================================
+           MAIN
+        ===================================================== */
+
+        .main {
+            margin-left: 280px;
+            padding: 24px;
+        }
+
+        .topbar,
+        .card-box {
+            background: white;
+            border-radius: 22px;
+            box-shadow: 0 8px 28px rgba(15,23,42,.08);
+        }
+
+        .topbar {
+            padding: 20px 26px;
+            margin-bottom: 24px;
+        }
+
+
+        /* =====================================================
+           KPI
+        ===================================================== */
+
+        .kpi-card {
+            background: white;
+            border-radius: 22px;
+            padding: 24px;
+            box-shadow: 0 8px 28px rgba(15,23,42,.08);
+            border: 1px solid #eef2f7;
+            height: 100%;
+        }
+
+        .kpi-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .blue {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .green {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .orange {
+            background: #ffedd5;
+            color: #ea580c;
+        }
+
+        .red {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+
+        /* =====================================================
+           AI COMMAND CENTER
+        ===================================================== */
+
+        .dark-panel {
+            background: linear-gradient(
+                135deg,
+                #0f172a,
+                #1d4ed8
+            );
+
+            color: white;
+            border-radius: 24px;
+            padding: 26px;
+            box-shadow: 0 8px 28px rgba(15,23,42,.18);
+        }
+
+
+        .ai-module {
+            background: rgba(255,255,255,.10);
+            border: 1px solid rgba(255,255,255,.12);
+            border-radius: 16px;
+            padding: 18px;
+            margin-top: 12px;
+            height: 100%;
+        }
+
+
+        .ai-module-title {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+
+        .ai-module-description {
+            font-size: 12px;
+            color: rgba(255,255,255,.65);
+            margin-top: 3px;
+        }
+
+
+        .ai-status-ready {
+            background: #16a34a;
+        }
+
+
+        .ai-status-next {
+            background: #f59e0b;
+            color: #172033;
+        }
+
+
+        .ai-status-planned {
+            background: #64748b;
+        }
+
+
+        .ai-command-button {
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+
+        /* =====================================================
+           ACTIVITY
+        ===================================================== */
+
+        .activity-item {
+            border-left: 3px solid #2563eb;
+            padding-left: 14px;
+            margin-bottom: 18px;
+        }
+
+
+        /* =====================================================
+           QUICK ACTION
+        ===================================================== */
+
+        .quick-btn {
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 14px;
+            background: #f8fafc;
+            text-decoration: none;
+            color: #0f172a;
+            display: block;
+            height: 100%;
+        }
+
+
+        .quick-btn:hover {
+            background: #eaf1ff;
+            color: #2563eb;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 991px) {
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                min-height: auto;
+            }
+
+            .main {
+                margin-left: 0;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     SIDEBAR
+========================================================= -->
+
+<div class="sidebar">
+
+
+    <div class="brand">
+
+        <i class="bi bi-hospital"></i>
+
+        iHIS
+
+        <div style="
+            font-size:12px;
+            color:#94a3b8;
+        ">
+            Enterprise Health Intelligence
+        </div>
+
+    </div>
+
+
+    <div class="sidebar-section">
+        Core System
+    </div>
+
+
+    <a class="active"
+       href="/dashboard">
+
+        <i class="bi bi-speedometer2"></i>
+
+        Dashboard
+
+    </a>
+
+
+    <a href="/patients">
+
+        <i class="bi bi-people"></i>
+
+        Patients
+
+    </a>
+
+
+    <a href="/doctors">
+
+        <i class="bi bi-person-badge"></i>
+
+        Doctors
+
+    </a>
+
+
+    <a href="/appointments">
+
+        <i class="bi bi-calendar-check"></i>
+
+        Appointments
+
+    </a>
+
+
+    <div class="sidebar-section">
+        Clinical Services
+    </div>
+
+
+    <a href="/laboratory">
+
+        <i class="bi bi-droplet"></i>
+
+        Laboratory
+
+    </a>
+
+
+    <a href="/radiology">
+
+        <i class="bi bi-image"></i>
+
+        Radiology
+
+    </a>
+
+
+    <!-- =====================================================
+         DENTAL CLINIC
+    ===================================================== -->
+
+    <a href="/dental">
+
+        <i class="bi bi-tooth"></i>
+
+        Dental Clinic
+
+    </a>
+
+
+    <!-- =====================================================
+         CLINICAL INTELLIGENCE
+    ===================================================== -->
+
+    <div class="sidebar-section">
+        Clinical Intelligence
+    </div>
+
+
+    <a href="{{ url_for('clinical_ai_command_center') }}">
+
+        <i class="bi bi-cpu"></i>
+
+        Clinical AI
+
+        <span class="badge bg-success ms-auto">
+            5 Live
+        </span>
+
+    </a>
+
+
+    <div class="sidebar-section">
+        Account
+    </div>
+
+
+    <a href="/logout">
+
+        <i class="bi bi-box-arrow-right"></i>
+
+        Logout
+
+    </a>
+
+
+</div>
+
+
+<!-- =========================================================
+     MAIN DASHBOARD
+========================================================= -->
+
+<div class="main">
+
+
+    <!-- =====================================================
+         TOP BAR
+    ===================================================== -->
+
+    <div class="
+        topbar
+        d-flex
+        justify-content-between
+        align-items-center
+    ">
+
+
+        <div>
+
+            <h3 class="mb-1">
+
+                Intelligent Health Information System
+
+            </h3>
+
+
+            <small class="text-muted">
+
+                Welcome,
+                {{ current_user.full_name }}
+                |
+                Role:
+                {{ current_user.role.name }}
+
+            </small>
+
+        </div>
+
+
+        <div class="
+            d-flex
+            align-items-center
+            gap-3
+        ">
+
+
+            <span class="
+                badge
+                bg-success
+                p-2
+            ">
+
+                System Online
+
+            </span>
+
+
+            <i class="
+                bi
+                bi-bell
+                fs-4
+            "></i>
+
+
+            <i class="
+                bi
+                bi-chat-dots
+                fs-4
+            "></i>
+
+
+            <div
+                class="
+                    rounded-circle
+                    bg-primary
+                    text-white
+                    d-flex
+                    align-items-center
+                    justify-content-center
+                "
+
+                style="
+                    width:42px;
+                    height:42px;
+                "
+            >
+
+                {{ current_user.full_name[0] }}
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         KPI CARDS
+    ===================================================== -->
+
+    <div class="row g-4 mb-4">
+
+
+        <!-- PATIENTS -->
+
+        <div class="
+            col-xl-3
+            col-md-6
+        ">
+
+            <div class="kpi-card">
+
+                <div class="
+                    d-flex
+                    justify-content-between
+                ">
+
+
+                    <div>
+
+                        <p class="
+                            text-muted
+                            mb-1
+                        ">
+
+                            Total Patients
+
+                        </p>
+
+
+                        <h2>
+
+                            {{ total_patients }}
+
+                        </h2>
+
+
+                        <small class="
+                            text-success
+                        ">
+
+                            Live from database
+
+                        </small>
+
+                    </div>
+
+
+                    <div class="
+                        kpi-icon
+                        blue
+                    ">
+
+                        <i class="
+                            bi
+                            bi-people
+                        "></i>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- APPOINTMENTS -->
+
+        <div class="
+            col-xl-3
+            col-md-6
+        ">
+
+            <div class="kpi-card">
+
+                <div class="
+                    d-flex
+                    justify-content-between
+                ">
+
+
+                    <div>
+
+                        <p class="
+                            text-muted
+                            mb-1
+                        ">
+
+                            Appointments
+
+                        </p>
+
+
+                        <h2>
+
+                            {{ total_appointments }}
+
+                        </h2>
+
+
+                        <small class="
+                            text-primary
+                        ">
+
+                            Scheduled records
+
+                        </small>
+
+                    </div>
+
+
+                    <div class="
+                        kpi-icon
+                        green
+                    ">
+
+                        <i class="
+                            bi
+                            bi-calendar2-check
+                        "></i>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- DOCTORS -->
+
+        <div class="
+            col-xl-3
+            col-md-6
+        ">
+
+            <div class="kpi-card">
+
+                <div class="
+                    d-flex
+                    justify-content-between
+                ">
+
+
+                    <div>
+
+                        <p class="
+                            text-muted
+                            mb-1
+                        ">
+
+                            Doctors
+
+                        </p>
+
+
+                        <h2>
+
+                            {{ total_doctors }}
+
+                        </h2>
+
+
+                        <small class="
+                            text-warning
+                        ">
+
+                            Active clinical staff
+
+                        </small>
+
+                    </div>
+
+
+                    <div class="
+                        kpi-icon
+                        orange
+                    ">
+
+                        <i class="
+                            bi
+                            bi-person-badge
+                        "></i>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- CANCELLED -->
+
+        <div class="
+            col-xl-3
+            col-md-6
+        ">
+
+            <div class="kpi-card">
+
+                <div class="
+                    d-flex
+                    justify-content-between
+                ">
+
+
+                    <div>
+
+                        <p class="
+                            text-muted
+                            mb-1
+                        ">
+
+                            Cancelled Appointments
+
+                        </p>
+
+
+                        <h2>
+
+                            {{ cancelled_appointments }}
+
+                        </h2>
+
+
+                        <small class="
+                            text-danger
+                        ">
+
+                            Needs review
+
+                        </small>
+
+                    </div>
+
+
+                    <div class="
+                        kpi-icon
+                        red
+                    ">
+
+                        <i class="
+                            bi
+                            bi-x-circle
+                        "></i>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- =====================================================
+         CHARTS
+    ===================================================== -->
+
+    <div class="
+        row
+        g-4
+        mb-4
+    ">
+
+
+        <div class="col-xl-8">
+
+            <div class="
+                card-box
+                p-4
+            ">
+
+
+                <div class="
+                    d-flex
+                    justify-content-between
+                ">
+
+
+                    <h5>
+
+                        System Activity Overview
+
+                    </h5>
+
+
+                    <span class="
+                        text-muted
+                    ">
+
+                        Live counts
+
+                    </span>
+
+
+                </div>
+
+
+                <canvas
+                    id="visitsChart"
+                    height="115">
+                </canvas>
+
+
+            </div>
+
+        </div>
+
+
+        <div class="col-xl-4">
+
+            <div class="
+                card-box
+                p-4
+            ">
+
+
+                <h5>
+
+                    System Distribution
+
+                </h5>
+
+
+                <canvas
+                    id="deptChart">
+                </canvas>
+
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- =====================================================
+         CLINICAL AI COMMAND CENTER
+    ===================================================== -->
+
+    <div class="
+        dark-panel
+        mb-4
+    ">
+
+
+        <div class="
+            d-flex
+            justify-content-between
+            align-items-start
+            flex-wrap
+            gap-3
+        ">
+
+
+            <div>
+
+                <h4 class="mb-1">
+
+                    <i class="
+                        bi
+                        bi-cpu
+                        me-2
+                    "></i>
+
+                    Clinical AI Command Center
+
+                </h4>
+
+
+                <p class="
+                    mb-0
+                    text-white-50
+                ">
+
+                    Integrated AI layer for clinical
+                    image analysis, decision support
+                    and intelligent healthcare workflows.
+
+                </p>
+
+            </div>
+
+
+            <div class="
+                d-flex
+                align-items-center
+                gap-2
+                flex-wrap
+            ">
+
+
+                <span class="
+                    badge
+                    bg-success
+                    p-2
+                ">
+
+                    <i class="
+                        bi
+                        bi-check-circle
+                        me-1
+                    "></i>
+
+                    3 AI Models Operational
+
+                </span>
+
+
+                <a
+                    href="{{ url_for('clinical_ai_command_center') }}"
+                    class="
+                        btn
+                        btn-light
+                        btn-sm
+                        ai-command-button
+                    "
+                >
+
+                    <i class="
+                        bi
+                        bi-grid
+                        me-1
+                    "></i>
+
+                    Open Command Center
+
+                </a>
+
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =================================================
+             AI MODULES
+        ================================================== -->
+
+        <div class="
+            row
+            g-3
+            mt-3
+        ">
+
+
+            <!-- DENTAL AI -->
+
+            <div class="
+                col-xl-4
+                col-md-6
+            ">
+
+
+                <div class="
+                    ai-module
+                    h-100
+                ">
+
+
+                    <div class="
+                        d-flex
+                        justify-content-between
+                        align-items-start
+                        gap-2
+                    ">
+
+
+                        <div>
+
+                            <div class="
+                                ai-module-title
+                            ">
+
+                                <i class="
+                                    bi
+                                    bi-image
+                                    me-1
+                                "></i>
+
+                                Dental AI
+
+                            </div>
+
+
+                            <div class="
+                                ai-module-description
+                            ">
+
+                                U-Net Dental Image Segmentation
+
+                            </div>
+
+                        </div>
+
+
+                        <span class="
+                            badge
+                            ai-status-ready
+                        ">
+
+                            Ready
+
+                        </span>
+
+
+                    </div>
+
+
+                    <div class="
+                        mt-3
+                        small
+                    ">
+
+                        AI-assisted segmentation of dental
+                        radiographic images for clinical
+                        decision-support workflows.
+
+                    </div>
+
+
+                    <a
+                        href="{{ url_for('dental_ai') }}"
+
+                        class="
+                            btn
+                            btn-light
+                            btn-sm
+                            w-100
+                            mt-3
+                        "
+                    >
+
+                        <i class="
+                            bi
+                            bi-play-circle
+                            me-1
+                        "></i>
+
+                        Launch Dental AI
+
+                    </a>
+
+
+                </div>
+
+            </div>
+
+
+            <!-- FRACTURE AI -->
+
+            <div class="
+                col-xl-4
+                col-md-6
+            ">
+
+
+                <div class="
+                    ai-module
+                    h-100
+                ">
+
+
+                    <div class="
+                        d-flex
+                        justify-content-between
+                        align-items-start
+                        gap-2
+                    ">
+
+
+                        <div>
+
+                            <div class="
+                                ai-module-title
+                            ">
+
+                                <i class="
+                                    bi
+                                    bi-bandaid
+                                    me-1
+                                "></i>
+
+                                Fracture AI
+
+                            </div>
+
+
+                            <div class="
+                                ai-module-description
+                            ">
+
+                                YOLO X-Ray Object Detection
+
+                            </div>
+
+                        </div>
+
+
+                        <span class="
+                            badge
+                            ai-status-ready
+                        ">
+
+                            Ready
+
+                        </span>
+
+
+                    </div>
+
+
+                    <div class="
+                        mt-3
+                        small
+                    ">
+
+                        AI-assisted X-ray object detection
+                        for musculoskeletal imaging and
+                        clinical decision-support workflows.
+
+                    </div>
+
+
+                    <a
+                        href="{{ url_for('fracture_ai') }}"
+
+                        class="
+                            btn
+                            btn-light
+                            btn-sm
+                            w-100
+                            mt-3
+                        "
+                    >
+
+                        <i class="
+                            bi
+                            bi-play-circle
+                            me-1
+                        "></i>
+
+                        Launch Fracture AI
+
+                    </a>
+
+
+                </div>
+
+            </div>
+
+
+            <!-- SKIN AI -->
+
+            <div class="
+                col-xl-4
+                col-md-6
+            ">
+
+
+                <div class="
+                    ai-module
+                    h-100
+                ">
+
+
+                    <div class="
+                        d-flex
+                        justify-content-between
+                        align-items-start
+                        gap-2
+                    ">
+
+
+                        <div>
+
+                            <div class="
+                                ai-module-title
+                            ">
+
+                                <i class="
+                                    bi
+                                    bi-search-heart
+                                    me-1
+                                "></i>
+
+                                Skin AI
+
+                            </div>
+
+
+                            <div class="
+                                ai-module-description
+                            ">
+
+                                EfficientNet-B0 Classification
+
+                            </div>
+
+                        </div>
+
+
+                        <span class="
+                            badge
+                            ai-status-ready
+                        ">
+
+                            Ready
+
+                        </span>
+
+
+                    </div>
+
+
+                    <div class="
+                        mt-3
+                        small
+                    ">
+
+                        AI-assisted dermoscopic skin lesion
+                        classification for melanoma versus
+                        nevus decision-support workflows.
+
+                    </div>
+
+
+                    <a
+                        href="{{ url_for('skin_ai') }}"
+
+                        class="
+                            btn
+                            btn-light
+                            btn-sm
+                            w-100
+                            mt-3
+                        "
+                    >
+
+                        <i class="
+                            bi
+                            bi-play-circle
+                            me-1
+                        "></i>
+
+                        Launch Skin AI
+
+                    </a>
+
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =================================================
+             AI PLATFORM STATUS
+        ================================================== -->
+
+        <div class="
+            row
+            mt-4
+            pt-3
+            border-top
+            border-light
+            border-opacity-25
+        ">
+
+
+            <div class="
+                col-md-3
+                mb-2
+            ">
+
+                <small class="
+                    text-white-50
+                ">
+
+                    Active AI Models
+
+                </small>
+
+                <div class="
+                    fw-semibold
+                ">
+
+                    3
+
+                </div>
+
+            </div>
+
+
+            <div class="
+                col-md-3
+                mb-2
+            ">
+
+                <small class="
+                    text-white-50
+                ">
+
+                    Models in Integration
+
+                </small>
+
+                <div class="
+                    fw-semibold
+                ">
+
+                    0
+
+                </div>
+
+            </div>
+
+
+            <div class="
+                col-md-3
+                mb-2
+            ">
+
+                <small class="
+                    text-white-50
+                ">
+
+                    AI Task Types
+
+                </small>
+
+                <div class="
+                    fw-semibold
+                ">
+
+                    3
+
+                </div>
+
+            </div>
+
+
+            <div class="
+                col-md-3
+                mb-2
+            ">
+
+                <small class="
+                    text-white-50
+                ">
+
+                    AI Architecture
+
+                </small>
+
+                <div class="
+                    fw-semibold
+                ">
+
+                    Modular Clinical AI
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+    <!-- =====================================================
+         OPERATIONS
+    ===================================================== -->
+
+    <div class="
+        row
+        g-4
+        mb-4
+    ">
+
+
+        <!-- QUICK ACTIONS -->
+
+        <div class="
+            col-xl-6
+        ">
+
+
+            <div class="
+                card-box
+                p-4
+                h-100
+            ">
+
+
+                <h5>
+
+                    Quick Actions
+
+                </h5>
+
+
+                <div class="
+                    row
+                    g-3
+                    mt-2
+                ">
+
+
+                    <div class="col-md-6">
+
+                        <a
+                            class="quick-btn"
+                            href="/patients/create"
+                        >
+
+                            <i class="
+                                bi
+                                bi-person-plus
+                            "></i>
+
+                            <br>
+
+                            Add Patient
+
+                        </a>
+
+                    </div>
+
+
+                    <div class="col-md-6">
+
+                        <a
+                            class="quick-btn"
+                            href="/appointments/create"
+                        >
+
+                            <i class="
+                                bi
+                                bi-calendar-plus
+                            "></i>
+
+                            <br>
+
+                            Appointment
+
+                        </a>
+
+                    </div>
+
+
+                    <div class="col-md-6">
+
+                        <a
+                            class="quick-btn"
+                            href="/doctors/create"
+                        >
+
+                            <i class="
+                                bi
+                                bi-person-badge
+                            "></i>
+
+                            <br>
+
+                            Add Doctor
+
+                        </a>
+
+                    </div>
+
+
+                    <div class="col-md-6">
+
+                        <a
+                            class="quick-btn"
+                            href="/appointments/calendar"
+                        >
+
+                            <i class="
+                                bi
+                                bi-calendar-week
+                            "></i>
+
+                            <br>
+
+                            Calendar
+
+                        </a>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+        <!-- RECENT ACTIVITY -->
+
+        <div class="
+            col-xl-6
+        ">
+
+
+            <div class="
+                card-box
+                p-4
+                h-100
+            ">
+
+
+                <h5>
+
+                    Recent Activity
+
+                </h5>
+
+
+                <div class="mt-3">
+
+
+                    <div class="
+                        activity-item
+                    ">
+
+                        <b>
+
+                            System dashboard opened
+
+                        </b>
+
+                        <br>
+
+                        <small class="
+                            text-muted
+                        ">
+
+                            Live statistics loaded
+                            from database
+
+                        </small>
+
+                    </div>
+
+
+                    <div class="
+                        activity-item
+                    ">
+
+                        <b>
+
+                            Appointments tracked
+
+                        </b>
+
+                        <br>
+
+                        <small class="
+                            text-muted
+                        ">
+
+                            {{ total_appointments }}
+                            appointment records
+                            available
+
+                        </small>
+
+                    </div>
+
+
+                    <div class="
+                        activity-item
+                    ">
+
+                        <b>
+
+                            Telemedicine enabled
+
+                        </b>
+
+                        <br>
+
+                        <small class="
+                            text-muted
+                        ">
+
+                            {{ telemedicine_visits }}
+                            telemedicine visit records
+
+                        </small>
+
+                    </div>
+
+
+                    <div class="
+                        activity-item
+                    ">
+
+                        <b>
+
+                            Clinical AI layer operational
+
+                        </b>
+
+                        <br>
+
+                        <small class="
+                            text-muted
+                        ">
+
+                            Dental U-Net, Fracture YOLO
+                            and Skin EfficientNet-B0
+                            models are available through
+                            the Clinical AI Command Center.
+
+                        </small>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- =====================================================
+         RECENT DATA
+    ===================================================== -->
+
+    <div class="
+        row
+        g-4
+    ">
+
+
+        <!-- RECENT APPOINTMENTS -->
+
+        <div class="
+            col-xl-4
+        ">
+
+
+            <div class="
+                card-box
+                p-4
+                h-100
+            ">
+
+
+                <h5>
+
+                    Recent Appointments
+
+                </h5>
+
+
+                <table class="
+                    table
+                    table-sm
+                    mt-3
+                ">
+
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Patient
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+
+                        {% for appointment in recent_appointments %}
+
+                        <tr>
+
+                            <td>
+
+                                {{
+                                    appointment
+                                    .patient
+                                    .full_name
+                                }}
+
+                            </td>
+
+                            <td>
+
+                                {{
+                                    appointment
+                                    .status
+                                }}
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+
+                    </tbody>
+
+
+                </table>
+
+
+            </div>
+
+        </div>
+
+
+        <!-- RECENT PATIENTS -->
+
+        <div class="
+            col-xl-4
+        ">
+
+
+            <div class="
+                card-box
+                p-4
+                h-100
+            ">
+
+
+                <h5>
+
+                    Recent Patients
+
+                </h5>
+
+
+                <table class="
+                    table
+                    table-sm
+                    mt-3
+                ">
+
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                MRN
+                            </th>
+
+                            <th>
+                                Name
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+
+                        {% for patient in recent_patients %}
+
+                        <tr>
+
+                            <td>
+
+                                {{ patient.mrn }}
+
+                            </td>
+
+                            <td>
+
+                                {{ patient.full_name }}
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+
+                    </tbody>
+
+
+                </table>
+
+
+            </div>
+
+        </div>
+
+
+        <!-- TODAY SCHEDULE -->
+
+        <div class="
+            col-xl-4
+        ">
+
+
+            <div class="
+                card-box
+                p-4
+                h-100
+            ">
+
+
+                <h5>
+
+                    Today's Schedule
+
+                </h5>
+
+
+                {% if today_appointments %}
+
+
+                    <ul class="
+                        list-group
+                        mt-3
+                    ">
+
+
+                        {% for appointment in today_appointments %}
+
+
+                        <li class="
+                            list-group-item
+                        ">
+
+                            {{
+                                appointment
+                                .appointment_time
+                            }}
+
+                            -
+
+                            {{
+                                appointment
+                                .patient
+                                .full_name
+                            }}
+
+                        </li>
+
+
+                        {% endfor %}
+
+
+                    </ul>
+
+
+                {% else %}
+
+
+                    <div class="
+                        alert
+                        alert-light
+                        mt-3
+                    ">
+
+                        No appointments today
+
+                    </div>
+
+
+                {% endif %}
+
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+<!-- =========================================================
+     CHART DATA
+========================================================= -->
+
+<script>
+
+    const dashboardData = {
+
+        totalPatients:
+            Number(
+                "{{ total_patients }}"
+            ),
+
+        totalDoctors:
+            Number(
+                "{{ total_doctors }}"
+            ),
+
+        totalAppointments:
+            Number(
+                "{{ total_appointments }}"
+            ),
+
+        cancelledAppointments:
+            Number(
+                "{{ cancelled_appointments }}"
+            ),
+
+        telemedicineVisits:
+            Number(
+                "{{ telemedicine_visits }}"
+            )
+
+    };
+
+
+    /* =====================================================
+       ACTIVITY CHART
+    ===================================================== */
+
+    new Chart(
+
+        document.getElementById(
+            "visitsChart"
+        ),
+
+        {
+
+            type: "line",
+
+            data: {
+
+                labels: [
+
+                    "Patients",
+
+                    "Doctors",
+
+                    "Appointments",
+
+                    "Cancelled"
+
+                ],
+
+                datasets: [
+
+                    {
+
+                        label:
+                            "System Counts",
+
+                        data: [
+
+                            dashboardData
+                                .totalPatients,
+
+                            dashboardData
+                                .totalDoctors,
+
+                            dashboardData
+                                .totalAppointments,
+
+                            dashboardData
+                                .cancelledAppointments
+
+                        ],
+
+                        borderWidth: 3,
+
+                        tension: 0.4
+
+                    }
+
+                ]
+
+            }
+
+        }
+
+    );
+
+
+    /* =====================================================
+       DISTRIBUTION CHART
+    ===================================================== */
+
+    new Chart(
+
+        document.getElementById(
+            "deptChart"
+        ),
+
+        {
+
+            type: "doughnut",
+
+            data: {
+
+                labels: [
+
+                    "Patients",
+
+                    "Doctors",
+
+                    "Appointments",
+
+                    "Telemedicine"
+
+                ],
+
+                datasets: [
+
+                    {
+
+                        data: [
+
+                            dashboardData
+                                .totalPatients,
+
+                            dashboardData
+                                .totalDoctors,
+
+                            dashboardData
+                                .totalAppointments,
+
+                            dashboardData
+                                .telemedicineVisits
+
+                        ]
+
+                    }
+
+                ]
+
+            }
+
+        }
+
+    );
+
+</script>
+
+
+</body>
+
+</html>

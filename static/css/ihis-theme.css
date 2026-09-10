@@ -1,0 +1,195 @@
+:root {
+    --ihis-primary: #0F172A;
+    --ihis-secondary: #2563EB;
+    --ihis-accent: #06B6D4;
+    --ihis-success: #10B981;
+    --ihis-danger: #EF4444;
+    --ihis-warning: #F59E0B;
+    --ihis-bg: #F8FAFC;
+    --ihis-card: #FFFFFF;
+    --ihis-text: #1E293B;
+    --ihis-muted: #64748B;
+    --ihis-border: #E2E8F0;
+}
+
+body {
+    background: var(--ihis-bg);
+    color: var(--ihis-text);
+    font-family: Arial, sans-serif;
+}
+
+.ihis-gradient {
+    background: linear-gradient(135deg, var(--ihis-primary), var(--ihis-secondary));
+}
+
+.ihis-card {
+    background: var(--ihis-card);
+    border: 1px solid var(--ihis-border);
+    border-radius: 20px;
+    box-shadow: 0 12px 35px rgba(15, 23, 42, 0.08);
+}
+
+.ihis-btn-primary {
+    background: var(--ihis-secondary);
+    border: none;
+    color: #fff;
+    border-radius: 14px;
+    font-weight: 600;
+    padding: 12px 18px;
+}
+
+.ihis-btn-primary:hover {
+    background: #1D4ED8;
+    color: #fff;
+}
+
+.ihis-btn-secondary {
+    background: #475569;
+    border: none;
+    color: #fff;
+    border-radius: 14px;
+    font-weight: 600;
+    padding: 12px 18px;
+}
+
+.ihis-badge-success {
+    background: var(--ihis-success);
+    color: #fff;
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 12px;
+}
+
+.ihis-badge-warning {
+    background: var(--ihis-warning);
+    color: #111827;
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 12px;
+}
+
+.ihis-badge-danger {
+    background: var(--ihis-danger);
+    color: #fff;
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 12px;
+}
+
+.ihis-form-control {
+    height: 52px;
+    border-radius: 14px;
+    border: 1px solid var(--ihis-border);
+}
+
+.ihis-form-control:focus {
+    border-color: var(--ihis-secondary);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+}
+
+.ihis-table {
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.ihis-table thead {
+    background: #F1F5F9;
+}
+
+.ihis-table th {
+    color: var(--ihis-primary);
+    font-weight: 700;
+}
+
+.ihis-login-page {
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at top left, rgba(6, 182, 212, 0.22), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(37, 99, 235, 0.25), transparent 40%),
+        linear-gradient(135deg, #020617, #0F172A);
+}
+
+.ihis-login-shell {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+}
+
+.ihis-login-card {
+    width: 100%;
+    max-width: 1120px;
+    background: #fff;
+    border-radius: 30px;
+    overflow: hidden;
+    box-shadow: 0 35px 90px rgba(0, 0, 0, 0.35);
+}
+
+.ihis-login-left {
+    background:
+        linear-gradient(160deg, rgba(15, 23, 42, 0.96), rgba(37, 99, 235, 0.92)),
+        radial-gradient(circle at 20% 20%, rgba(6, 182, 212, 0.35), transparent 30%);
+    color: #fff;
+    padding: 60px;
+    height: 100%;
+    position: relative;
+}
+
+.ihis-brand-mark {
+    width: 76px;
+    height: 76px;
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.14);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 38px;
+    margin-bottom: 28px;
+}
+
+.ihis-login-feature {
+    margin-top: 22px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    color: #DBEAFE;
+}
+
+.ihis-ai-panel {
+    margin-top: 35px;
+    padding: 20px;
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(12px);
+}
+
+.ihis-login-right {
+    padding: 60px;
+}
+
+.ihis-security-note {
+    background: #F1F5F9;
+    border: 1px solid #E2E8F0;
+    border-radius: 18px;
+    padding: 15px;
+    font-size: 13px;
+    color: var(--ihis-muted);
+}
+
+.ihis-link {
+    color: var(--ihis-secondary);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.ihis-link:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 991px) {
+    .ihis-login-left,
+    .ihis-login-right {
+        padding: 36px;
+    }
+}
