@@ -10,4 +10,9 @@ datasets/
 *.sqlite
 *.sqlite3
 Final-IHIS-Clean.tar.gz
-database/*.db
+
+# Ignore local database files and uploads, but keep the directories
+database/*
+!database/.gitkeep
+uploads/*
+!uploads/.gitkeep
